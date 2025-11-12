@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة تحكم شرفات ERP</title>
+  <style>
+    :root {
+      --navy: #0b1c39;
+      --dark-blue: #0f2f55;
+      --bg: #050812;
+      --accent: #29b6f6;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Tajawal", sans-serif;
+      background: var(--bg);
+      color: #fff;
+      display: flex;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* الشريط الجانبي */
+    aside {
+      width: 250px;
+      background: linear-gradient(180deg, var(--navy), var(--dark-blue));
+      height: 100vh;
+      padding: 1.5rem 1rem;
+      position: fixed;
+      top: 0;
+      right: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: -2px 0 10px rgba(0,0,0,0.3);
+      transition: width 0.3s ease;
+    }
+
+    .logo {
+      font-size: 1.6rem;
+      font-weight: bold;
+      color: var(--accent);
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    nav a {
+      display: block;
+      color: #fff;
+      text-decoration: none;
+      margin: 0.8rem 0;
+      padding: 0.7rem 1rem;
+      border-radius: 8px;
+      transition: 0.3s;
+      font-size: 1rem;
+    }
+
+    nav a:hover {
+      background: rgba(41,182,246,0.2);
+      color: var(--accent);
+    }
+
+    /* المحتوى الرئيسي */
+    main {
+      margin-right: 260px;
+      padding: 2rem;
+      flex: 1;
+      transition: margin 0.3s ease;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    header h1 {
+      font-size: 1.8rem;
+      color: var(--accent);
+      margin: 0;
+    }
+
+    .user-info {
+      background: rgba(255,255,255,0.08);
+      padding: 0.6rem 1.2rem;
+      border-radius: 10px;
+      font-size: 1rem;
+      color: #fff;
+    }
+
+    /* البطاقات */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .card {
+      background: linear-gradient(180deg, #0b1c39, #0f2f55);
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 0 12px rgba(41,182,246,0.15);
+      transition: 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 0 18px rgba(41,182,246,0.3);
+    }
+
+    .card h3 {
+      color: var(--accent);
+      margin-bottom: 0.6rem;
+    }
+
+    .card p {
+      font-size: 1.1rem;
+      margin: 0;
+    }
+
+    /* تسجيل الخروج */
+    .logout {
+      text-align: center;
+      margin-top: 1rem;
+    }
+
+    .logout a {
+      color: #fff;
+      text-decoration: none;
+      background: #c62828;
+      padding: 0.6rem 1rem;
+      border-radius: 6px;
+      display: inline-block;
+      transition: 0.3s;
+    }
+
+    .logout a:hover {
+      background: #e53935;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 3rem;
+      color: #999;
+      font-size: 0.85rem;
+    }
+
+    /* الجوال */
+    @media (max-width: 768px) {
+      aside {
+        width: 70px;
+        padding: 1rem 0.5rem;
+      }
+
+      nav a {
+        font-size: 0;
+        padding: 1rem;
+        text-align: center;
+      }
+
+      nav a::before {
+        content: '•';
+        font-size: 1.2rem;
+      }
+
+      .logo {
+        font-size: 1rem;
+      }
+
+      main {
+        margin-right: 80px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <aside>
+    <div>
+      <div class="logo">شرفات ERP</div>
+      <nav>
+        <a href="#">🏠 الرئيسية</a>
+        <a href="#">👨‍💼 الموظفين</a>
+        <a href="#">💰 المبيعات</a>
+        <a href="#">🧱 المشاريع</a>
+        <a href="#">📦 المخزون</a>
+        <a href="#">🧾 العملاء والفواتير</a>
+        <a href="#">⚙️ الإعدادات</a>
+      </nav>
+    </div>
+    <div class="logout">
+      <a href="/accounts/logout">تسجيل الخروج</a>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <h1>لوحة التحكم الرئيسية</h1>
+      <div class="user-info">مرحباً {{ request.user.username }}</div>
+    </header>
+
+    <section class="cards">
+      <div class="card">
+        <h3>عدد الموظفين</h3>
+        <p>24 موظف</p>
+      </div>
+
+      <div class="card">
+        <h3>إجمالي المبيعات</h3>
+        <p>1,245,000 ريال</p>
+      </div>
+
+      <div class="card">
+        <h3>عدد المشاريع</h3>
+        <p>12 مشروع</p>
+      </div>
+
+      <div class="card">
+        <h3>العملاء المسجلين</h3>
+        <p>87 عميل</p>
+      </div>
+    </section>
+
+    <footer>
+      جميع الحقوق محفوظة © شرفات ERP - 2025
+    </footer>
+  </main>
+
+</body>
+</html>
