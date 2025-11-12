@@ -1,55 +1,52 @@
-"""
-Django settings for ERP_SYSTEM project
-"""
-
-from pathlib import Path
 import os
+from pathlib import Path
+from dotenv import load_dotenv
 
 # =========================
-# المسارات الأساسية
+# تحميل ملف البيئة (.env)
 # =========================
+load_dotenv()
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # =========================
-# مفاتيح الأمان
+# مفاتيح الأمان والإعدادات
 # =========================
-SECRET_KEY = 'django-insecure-change-this-in-production'
-DEBUG = True
-ALLOWED_HOSTS = ['*']
+SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-default")
+DEBUG = os.getenv("DEBUG", "False") == "True"
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "*").split(",")
+ENV_MODE = os.getenv("ENV_MODE", "development")
 
 
 # =========================
 # التطبيقات المثبتة
 # =========================
 INSTALLED_APPS = [
-    # تطبيقات Django الأساسية
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
-    # مكتبات خارجية
     'corsheaders',
     'rest_framework',
 
-    # تطبيقات النظام المحلية
-    'accounts',           # المستخدمين وتسجيل الدخول
-    'admin_dashboard',    # لوحة تحكم المدير
-    'employee_portal',    # بوابة الموظف
-    'client_portal',      # بوابة العميل
-    'inventory',          # المخزون والمنتجات
-    'hr',                 # الموارد البشرية والرواتب
-    'sales',              # المبيعات والعمولات
-    'projects',           # المشاريع والمهام
-    'clients',            # العملاء والفواتير
+    # التطبيقات المحلية
+    'accounts',
+    'admin_dashboard',
+    'employee_portal',
+    'client_portal',
+    'inventory',
+    'hr',
+    'sales',
+    'projects',
+    'clients',
 ]
 
 
 # =========================
-# الطبقات الوسيطة (Middleware)
+# Middleware
 # =========================
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -64,20 +61,19 @@ MIDDLEWARE = [
 
 
 # =========================
-# إعدادات الـ URLs و WSGI
+# URLs / WSGI
 # =========================
 ROOT_URLCONF = 'erp_core.urls'
 WSGI_APPLICATION = 'erp_core.wsgi.application'
 
 
 # =========================
-# إعدادات القوالب (Templates)
+# Templates
 # =========================
-
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -91,35 +87,37 @@ TEMPLATES = [
 ]
 
 
-
 # =========================
-# قاعدة البيانات (SQLite افتراضية - تطوير)
+# قواعد البيانات
 # =========================
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+if ENV_MODE == "production":
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.getenv('DB_NAME'),
+            'USER': os.getenv('DB_USER'),
+            'PASSWORD': os.getenv('DB_PASSWORD'),
+            'HOST': os.getenv('DB_HOST'),
+            'PORT': os.getenv('DB_PORT'),
+        }
     }
-    # للإنتاج: استبدل بـ PostgreSQL أو MySQL
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.postgresql',
-    #     'NAME': 'erp_db',
-    #     'USER': 'erp_user',
-    #     'PASSWORD': 'secure_password',
-    #     'HOST': 'localhost',
-    #     'PORT': '5432',
-    # }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 
 # =========================
-# نموذج المستخدم المخصص
+# المستخدم المخصص
 # =========================
 AUTH_USER_MODEL = 'accounts.User'
 
 
 # =========================
-# إعدادات كلمات المرور
+# كلمات المرور
 # =========================
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
@@ -139,7 +137,7 @@ USE_TZ = True
 
 
 # =========================
-# الملفات الثابتة (Static & Media)
+# الملفات الثابتة
 # =========================
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
@@ -150,17 +148,15 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 
 # =========================
-# إعدادات تسجيل الدخول / الخروج
+# تسجيل الدخول والخروج
 # =========================
-LOGIN_URL = 'accounts:login'
-
 LOGIN_URL = 'accounts:login'
 LOGIN_REDIRECT_URL = '/admin_dashboard/dashboard/'
 LOGOUT_REDIRECT_URL = '/'
 
 
 # =========================
-# إعدادات Django REST Framework
+# Django REST
 # =========================
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -173,18 +169,12 @@ REST_FRAMEWORK = {
 
 
 # =========================
-# إعدادات CORS (للسماح بالاتصالات)
+# إعدادات CORS
 # =========================
 CORS_ALLOW_ALL_ORIGINS = True
 
 
 # =========================
-# القيم الافتراضية للمفاتيح الأساسية
+# الإعداد الافتراضي للحقل الأساسي
 # =========================
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-
-# =========================
-# تخصيص صفحة الخطأ الافتراضية (اختياري)
-# =========================
-# يمكنك إنشاء templates/404.html و 500.html لتصميم احترافي للأخطاء.
