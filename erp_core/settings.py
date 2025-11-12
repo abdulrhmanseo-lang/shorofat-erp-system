@@ -1,21 +1,19 @@
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+import dj_database_url
 
-# =========================
-# تحميل ملف البيئة (.env)
-# =========================
 load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+SECRET_KEY = os.getenv("SECRET_KEY", "default-secret-key")
 
-# =========================
-# مفاتيح الأمان والإعدادات
-# =========================
-SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-default")
 DEBUG = os.getenv("DEBUG", "False") == "True"
-ALLOWED_HOSTS = ['shorofat-erp-system.onrender.com', '127.0.0.1', 'localhost']
+
+# 👇 هنا التعديل المهم
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
+
 
 ENV_MODE = os.getenv("ENV_MODE", "development")
 
